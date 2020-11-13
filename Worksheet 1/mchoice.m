@@ -61,10 +61,25 @@ end
 % --- prediction policy 1 ---
 
 %%% Fill in this function! [WS exercise a)]
-function next = predict1()
+
+function next = predict1(j,transm)
 % predict player next move
 
-next = []; % This is a dummy function
+global param_a param_b %the two parameters are global because of game.m:line 251
+
+transm % display transition matrix
+r = rand;
+prob = sum(1<=[(r/param_a), (r/param_b)]);
+
+switch prob
+    case 0
+        hnext = mod(j, 3) + 1;
+    case 1
+        hnext = mod(j+1, 3) + 1;
+    case 2
+        hnext = j;
+end
+next = winchoice(hnext); % This is a dummy function
 % HINT: The function should look similar to predict2 and predict3 below
 
 
