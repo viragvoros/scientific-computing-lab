@@ -33,16 +33,19 @@
 %
 
 % --- Main function ---
-function next = mchoice(ng, i, j)
+function next = mchoice(ng, i, j, i_comp, j_comp)
 % machine next move
-global samplem transm policy
+global samplem transm samplem2 transm2 policy
 if(ng == 1)
     % initialize matrices
-    [samplem,transm]   = initmchoice;
+    [samplem,transm,samplem2,transm2]   = initmchoice;
     next = randi(3);
 else
     samplem  = updatesamplem(i,j,samplem);
+    samplem2  = updatesamplem(i_comp,j_comp,samplem2);
+    
     transm   = updatetransm(samplem);
+    transm2   = updatetransm(samplem2);
     
     switch policy
         case 1
@@ -54,8 +57,8 @@ else
         otherwise
             error('Bad policy given!')
     end
-    
 end
+transm2
 
 
 % --- prediction policy 1 ---
@@ -90,11 +93,14 @@ next = winchoice(hnext); % This is a dummy function
 
 % --- Additional functions ---
 
-function [samplem,transm] = initmchoice()
+function [samplem,transm,samplem2,transm2] = initmchoice()
 % initialize sample and transition matrices
 
 samplem = [1 1 1; 1 1 1; 1 1 1];
+samplem2 = [1 1 1; 1 1 1; 1 1 1];
+
 transm = updatetransm(samplem);
+transm2 = updatetransm(samplem2);
 
 function transm = updatetransm(samplem)
 % update transition matrix
