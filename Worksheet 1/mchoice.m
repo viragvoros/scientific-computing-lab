@@ -52,8 +52,11 @@ else
             next = predict1(j,transm);
         case 2
             next = predict2(j,transm);
+            % Predicts the outcome that is the most likely, given history
         case 3
             next = predict3(j,transm);
+            % Predicts the outcome by sampling with a probability
+            % distribution that fits the history
         otherwise
             error('Bad policy given!')
     end
@@ -69,6 +72,9 @@ function next = predict1(j,transm)
 % predict player next move
 
 global param_a param_b %the two parameters are global because of game.m:line 251
+% "a" is the probablity to predict that the player will play what beats his
+% previous move and "1-b" is the probability to predict he will repeat his
+% move.
 
 transm % display transition matrix
 r = rand;
