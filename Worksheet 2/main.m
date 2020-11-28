@@ -10,7 +10,6 @@ close all
 clc
 
 % Initial parameters
-t_init=0;                                       % Initial value for time
 t_last=5;                                       % Last value of time 
 delta_t=[1 0.5 0.25 0.125];                     % Timestep sizes
 p_init=1;                                       % Initial condition
@@ -20,7 +19,7 @@ p_init=1;                                       % Initial condition
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Euler method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_EULER]=odeEULER(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_EULER]=odeEULER(@dpdt,t_last,delta_t(idelta_t),p_init); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
@@ -51,7 +50,7 @@ hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Heun method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_HEUN]=odeHEUN(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_HEUN]=odeHEUN(@dpdt,t_last,delta_t(idelta_t),p_init); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
@@ -80,7 +79,7 @@ hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Runge-Kutta method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_RUNGE]=odeRUNGE(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_RUNGE]=odeRUNGE(@dpdt,t_last,delta_t(idelta_t),p_init); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
