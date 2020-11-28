@@ -1,7 +1,7 @@
 % Runge-Kutta method (4th order) calculation
 function [t,p] = odeRUNGE(ODE,p_init, delta_t, t_last)
 t_init = 0;
-N = (t_last-t_init)/delta_t + 1;               % Number of calculated points
+N = floor((t_last-t_init)/delta_t) + 1;               % Number of calculated points
 p = zeros(N,1);                            % Initializing p vector
 t = zeros(N,1);                            % Initializing time vector
 t(1) = 0;                                  % Initial value for time
