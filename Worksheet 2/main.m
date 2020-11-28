@@ -106,9 +106,9 @@ hold off
 
 
 % Calculating factor if step size is halved C)iii)
-factor_EULER = [0 E_EULER(2)/E_EULER(1) E_EULER(2)/E_EULER(3) E_EULER(3)/E_EULER(4)];
-factor_HEUN = [0 E_HEUN(2)/E_HEUN(1) E_HEUN(2)/E_HEUN(3) E_HEUN(3)/E_HEUN(4)];
-factor_RUNGE = [0 E_RUNGE(2)/E_RUNGE(1) E_RUNGE(2)/E_RUNGE(3) E_RUNGE(3)/E_RUNGE(4)];
+factor_EULER = [0 E_EULER(2)/E_EULER(1) E_EULER(3)/E_EULER(2) E_EULER(4)/E_EULER(3)];
+factor_HEUN = [0 E_HEUN(2)/E_HEUN(1) E_HEUN(3)/E_HEUN(2) E_HEUN(4)/E_HEUN(3)];
+factor_RUNGE = [0 E_RUNGE(2)/E_RUNGE(1) E_RUNGE(3)/E_RUNGE(2) E_RUNGE(4)/E_RUNGE(3)];
 %--------------------------------------------------------------------------
 
 % Displaying errors
