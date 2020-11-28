@@ -29,7 +29,7 @@ E_EULER(idelta_t)=sqrt((idelta_t/t_last)*sum((p_EULER-p_exact).^2));
 
 % Plotting Euler method with different values for step size
 figure(1)
-plot(t,p_EULER(:,1),'LineWidth',2)
+plot(t,p_EULER(:,1),'LineWidth',1)
 xlabel('Time')
 ylabel('Population')
 title('Euler method')
@@ -40,7 +40,7 @@ hold on
 end
 
 % Plotting exact value of the analytical solution
-plot(t,p_exact(:,1),'LineWidth',2)
+plot(t,p_exact(:,1),'--', 'LineWidth',2)
 legend_info{length(delta_t)+1}=('Analytical solution');
 legend(legend_info);
 hold off
