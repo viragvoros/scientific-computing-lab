@@ -3,7 +3,7 @@
 % Calculating error approximation C)iv)
 % E_approx(idelta_t)=sqrt((idelta_t/t_last)*sum((p-p_best).^2)); % error with p_best
 % Probably it should be in all the three for loops
-
+    
 
 clear all
 close all
@@ -106,15 +106,19 @@ hold off
 
 
 % Calculating factor if step size is halved C)iii)
+% Error variation is error for a given time step divided by error with the previous,
+% bigger, time step, hence a component-wise division of the array with itself but "shifted"
+% A padding 0 is added to have the same size as the number of time steps,
+% to make it possible to write everything in a table
 factor_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
 factor_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
 factor_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
 %--------------------------------------------------------------------------
 
 % Displaying errors
-errors_EULER=[delta_t; E_EULER; factor_EULER]
-errors_HEUN=[delta_t; E_HEUN; factor_HEUN]
-errors_RUNGE=[delta_t; E_RUNGE; factor_RUNGE]
+errors_EULER = [delta_t; E_EULER; factor_EULER]
+errors_HEUN = [delta_t; E_HEUN; factor_HEUN]
+errors_RUNGE = [delta_t; E_RUNGE; factor_RUNGE]
 %--------------------------------------------------------------------------
 
 
