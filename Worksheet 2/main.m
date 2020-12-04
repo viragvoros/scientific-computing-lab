@@ -1,120 +1,82 @@
-% TODO
-% Calculating error approximation C)iv)
-% E_approx(i) = sqrt((delta_t(i) / t_last) * sum((p - p_best).^2)); % error with p_best
-% Probably it should be in all the three for loops
-
-clear all
-close all
-clc
+clear all;
+close all;
+clc;
 
 % Initial parameters
-t_last = 5;                                       % Last value of time
+t_end = 5;                                        % Last value of time
 delta_t = [1 0.5 0.25 0.125];                     % Timestep sizes
 p0 = 1;                                           % Initial condition
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EULER method
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calling Euler method with different values for step size
 for i = 1:length(delta_t)
-    [t, p_EULER] = odeEULER(@dpdt, p0, delta_t(i), t_last); % t,p output variables
+    t = 0:delta_t(i):t_end;
+    
+    p_EULER = odeEULER(@dpdt, p0, delta_t(i), t_end);
+    p_HEUN = odeHEUN(@dpdt, p0, delta_t(i), t_end);
+    p_RUNGE = odeRUNGE(@dpdt, p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
-    [p_exact] = calcEXACT(t);
+    p_exact = calcEXACT(t.');
     
     % Calculating error C)ii)
-    E_EULER(i) = sqrt((delta_t(i) / t_last) * sum((p_EULER - p_exact).^2));
+    E_EULER(i) = sqrt((delta_t(i) / t_end) * sum((p_EULER - p_exact).^2));
+    E_HEUN(i) = sqrt((delta_t(i) / t_end) * sum((p_HEUN - p_exact).^2));
+    E_RUNGE(i) = sqrt((delta_t(i) / t_end) * sum((p_RUNGE - p_exact).^2));
     
-    % Plotting Euler method with different values for step size
-    figure(1)
-    plot(t, p_EULER(:, 1), 'LineWidth', 1)
-    xlabel('Time')
-    ylabel('Population')
-    title('Euler method')
-    grid on
     legend_info{i} = sprintf('Step size = %1.3f', delta_t(i));
-    box on
-    hold on
+    
+    figure(1);
+    plot(t, p_EULER(:, 1), 'LineWidth', 1);
+    hold on;
+    
+    figure(2);
+    plot(t, p_HEUN(:, 1), 'LineWidth', 1);
+    hold on;
+    
+    figure(3);
+    plot(t, p_RUNGE(:, 1), 'LineWidth', 1);
+    hold on;
 end
 
-% Plotting exact value of the analytical solution
-plot(t, p_exact(:, 1), '--', 'LineWidth', 2)
-legend_info{length(delta_t) + 1} = ('Analytical solution');
-legend(legend_info);
-hold off
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% HEUN method
+% SETTING UP THE FIGURES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calling Heun method with different values for step size
-for i = 1:length(delta_t)
-    [t, p_HEUN] = odeHEUN(@dpdt, p0, delta_t(i), t_last); % t,p output variables
+
+titles = ["Euler method" "Heun method" "Runge-Kutta method"];
+tt = linspace(0, t_end);
+analytical_solution = calcEXACT(tt);
+
+for i = 1:3
+    figure(i);
+
+    title(titles(i));
+    xlabel('Time');
+    ylabel('Population');
+    grid on;
+    box on;
     
-    % Calling exact value of the analytical solution
-    [p_exact] = calcEXACT(t);
+    plot(tt, analytical_solution(:, 1), '--', 'LineWidth', 2);
     
-    % Calculating error C)ii)
-    E_HEUN(i) = sqrt((delta_t(i) / t_last) * sum((p_HEUN - p_exact).^2));
-    
-    % Plotting Heun method with different values for step size
-    figure(2)
-    plot(t,p_HEUN(:, 1), 'LineWidth', 2)
-    xlabel('Time')
-    ylabel('Population')
-    title('Heun method')
-    grid on
-    box on
-    hold on
+    legend_info{length(delta_t) + 1} = ('Analytical solution');
+    legend(legend_info);
 end
 
-% Plotting exact value of the analytical solution
-plot(t, p_exact(:, 1), 'LineWidth', 2)
-legend(legend_info);
-hold off
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% RUNGE-KUTTA method
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calling Runge-Kutta method with different values for step size
-for i = 1:length(delta_t)
-    [t, p_RUNGE] = odeRUNGE(@dpdt, p0, delta_t(i), t_last); % t,p output variables
-    
-    % Calling exact value of the analytical solution
-    [p_exact] = calcEXACT(t);
-    
-    % Calculating error C)ii)
-    E_RUNGE(i) = sqrt((delta_t(i) / t_last) * sum((p_RUNGE - p_exact).^2));
-    
-    % Plotting Runge-Kutta method with different values for step size
-    figure(3)
-    plot(t, p_RUNGE(:, 1), 'LineWidth', 2)
-    xlabel('Time')
-    ylabel('Population')
-    title('Runge-Kutta method')
-    grid on
-    box on
-    hold on
-end
-
-% Plotting exact value of the analytical solution
-plot(t, p_exact(:, 1), 'LineWidth', 2)
-legend(legend_info);
-hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Calculating factor if step size is halved C)iii)
-% Error variation is error for a given time step divided by error with the previous,
+% Error reduction is error for a given time step divided by error with the previous,
 % bigger, time step, hence a component-wise division of the array with itself but "shifted"
 % A padding 0 is added to have the same size as the number of time steps,
 % to make it possible to write everything in a table
-factor_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
-factor_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
-factor_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
+error_reduction_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
+error_reduction_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
+error_reduction_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
 %--------------------------------------------------------------------------
 
 % Displaying errors
-errors_EULER = [delta_t; E_EULER; factor_EULER]
-errors_HEUN = [delta_t; E_HEUN; factor_HEUN]
-errors_RUNGE = [delta_t; E_RUNGE; factor_RUNGE]
+errors_EULER = [delta_t; E_EULER; error_reduction_EULER]
+errors_HEUN = [delta_t; E_HEUN; error_reduction_HEUN]
+errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
 %--------------------------------------------------------------------------
