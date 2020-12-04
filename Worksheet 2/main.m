@@ -3,14 +3,13 @@
 % Calculating error approximation C)iv)
 % E_approx(idelta_t)=sqrt((idelta_t/t_last)*sum((p-p_best).^2)); % error with p_best
 % Probably it should be in all the three for loops
-
+    
 
 clear all
 close all
 clc
 
 % Initial parameters
-t_init=0;                                       % Initial value for time
 t_last=5;                                       % Last value of time 
 delta_t=[1 0.5 0.25 0.125];                     % Timestep sizes
 p_init=1;                                       % Initial condition
@@ -20,7 +19,7 @@ p_init=1;                                       % Initial condition
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Euler method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_EULER]=odeEULER(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_EULER]=odeEULER(@dpdt,p_init,delta_t(idelta_t), t_last); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
@@ -30,7 +29,7 @@ E_EULER(idelta_t)=sqrt((idelta_t/t_last)*sum((p_EULER-p_exact).^2));
 
 % Plotting Euler method with different values for step size
 figure(1)
-plot(t,p_EULER(:,1),'LineWidth',2)
+plot(t,p_EULER(:,1),'LineWidth',1)
 xlabel('Time')
 ylabel('Population')
 title('Euler method')
@@ -41,7 +40,7 @@ hold on
 end
 
 % Plotting exact value of the analytical solution
-plot(t,p_exact(:,1),'LineWidth',2)
+plot(t,p_exact(:,1),'--', 'LineWidth',2)
 legend_info{length(delta_t)+1}=('Analytical solution');
 legend(legend_info);
 hold off
@@ -51,7 +50,7 @@ hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Heun method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_HEUN]=odeHEUN(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_HEUN]=odeHEUN(@dpdt,p_init, delta_t(idelta_t), t_last); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
@@ -80,7 +79,7 @@ hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calling Runge-Kutta method with different values for step size 
 for idelta_t=1:length(delta_t) 
-[t,p_RUNGE]=odeRUNGE(@dpdt,t_init,t_last,delta_t(idelta_t),p_init); % t,p output variables
+[t,p_RUNGE]=odeRUNGE(@dpdt,p_init, delta_t(idelta_t), t_last); % t,p output variables
 
 % Calling exact value of the analytical solution
 [p_exact]=calcEXACT(t);
@@ -107,15 +106,19 @@ hold off
 
 
 % Calculating factor if step size is halved C)iii)
-factor_EULER = [0 E_EULER(2)/E_EULER(1) E_EULER(2)/E_EULER(3) E_EULER(3)/E_EULER(4)];
-factor_HEUN = [0 E_HEUN(2)/E_HEUN(1) E_HEUN(2)/E_HEUN(3) E_HEUN(3)/E_HEUN(4)];
-factor_RUNGE = [0 E_RUNGE(2)/E_RUNGE(1) E_RUNGE(2)/E_RUNGE(3) E_RUNGE(3)/E_RUNGE(4)];
+% Error variation is error for a given time step divided by error with the previous,
+% bigger, time step, hence a component-wise division of the array with itself but "shifted"
+% A padding 0 is added to have the same size as the number of time steps,
+% to make it possible to write everything in a table
+factor_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
+factor_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
+factor_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
 %--------------------------------------------------------------------------
 
 % Displaying errors
-errors_EULER=[delta_t; E_EULER; factor_EULER]
-errors_HEUN=[delta_t; E_HEUN; factor_HEUN]
-errors_RUNGE=[delta_t; E_RUNGE; factor_RUNGE]
+errors_EULER = [delta_t; E_EULER; factor_EULER]
+errors_HEUN = [delta_t; E_HEUN; factor_HEUN]
+errors_RUNGE = [delta_t; E_RUNGE; factor_RUNGE]
 %--------------------------------------------------------------------------
 
 

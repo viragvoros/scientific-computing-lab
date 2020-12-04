@@ -1,19 +1,21 @@
-function [t, p] = odeEULER(ODE, t_init, t_last, delta_t, p0)
+function [t, p] = odeEULER(ODE, p0, delta_t, t_last)
 % odeEULER uses the Explicit Euler Method to compute discrete points of
 % the solution function for the given ODE.
 %
 % Inputs:
 %   ODE     = Derivative function that takes the p value.
-%   t_init  = Initial t value from which to start stepping from.
-%   t_last  = Last t value where to stop stepping.
-%   delta_t = Size of the time step.
 %   p0      = Initial value (at t0 = 0).
+%   delta_t = Size of the time step.
+%   t_last  = Last t value where to stop stepping.
 %
 % Outputs:
 %   [t, p]  = Vector containing the approximated values of p for a given t.
 
+% Where to start stepping from
+t_init = 0;
+
 % Number of calculated points
-N = (t_last - t_init) / delta_t;
+N = floor((t_last - t_init) / delta_t) + 1;
 
 % Initialize t and p vectors with the initial condition
 t = zeros(N, 1);

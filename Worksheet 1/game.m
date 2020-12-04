@@ -58,7 +58,7 @@ function varargout = game(varargin)
 %---------------
 % To exit the game just press the Exit-button on the lower left. The window
 % will close automatically. 
-%
+%   
 
 %%%
 % Begin initialization code --- DO NOT EDIT ---
