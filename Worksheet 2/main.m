@@ -10,6 +10,8 @@ p0 = 1;                                           % Initial condition
 % Cell array where results(i, j) is the array of points for the i-th delta_t 
 % computed with the method j (Euler = 1, Heun = 2, Runge-Kutta = 3)
 results = cell(length(delta_t), 3);
+%Approximation error for the i-th delta_t and j-th method
+ERRORS = zeros(length(delta_t), 3);
 
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
@@ -18,12 +20,15 @@ for i = 1:length(delta_t)
     results{i, 2} = odeHEUN(@dpdt, p0, delta_t(i), t_end);
     results{i, 3} = odeRUNGE(@dpdt, p0, delta_t(i), t_end);
     
-
     
     % Calling exact value of the analytical solution
     p_exact = calcEXACT(t.');
     
     % Calculating error C)ii)
+    
+    for j=1:3
+        ERRORS(i, j) = sqrt((delta_t(i) / t_end) * sum((results{i, j} - p_exact).^2));
+    end
     E_EULER(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 1} - p_exact).^2));
     E_HEUN(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 2} - p_exact).^2));
     E_RUNGE(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 3} - p_exact).^2));
@@ -42,6 +47,8 @@ for i = 1:length(delta_t)
     plot(t, results{i, 3}(:, 1), 'LineWidth', 1);
     hold on;
 end
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,15 +83,15 @@ end
 % bigger, time step, hence a component-wise division of the array with itself but "shifted"
 % A padding 0 is added to have the same size as the number of time steps,
 % to make it possible to write everything in a table
+
+% There is transposition such that error_reduction[i,j] gives the error
+% reduction from the i-1 to the i step, with the j-th method
+error_reduction = [[0,0,0]', ERRORS(2:end, :) ./ ERRORS(1:end-1, :)]';
+
 error_reduction_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
 error_reduction_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
 error_reduction_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
-%--------------------------------------------------------------------------
 
-% Displaying errors
-errors_EULER = [delta_t; E_EULER; error_reduction_EULER]
-errors_HEUN = [delta_t; E_HEUN; error_reduction_HEUN]
-errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
 %--------------------------------------------------------------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,3 +116,12 @@ for i = 1:(length(delta_t)-1)
     errors_app_HEUN(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
     errors_app_RUNGE(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
 end
+
+%--------------------------------------------------------------------------
+
+% Displaying errors
+
+
+errors_EULER = [delta_t; E_EULER; error_reduction_EULER]
+errors_HEUN = [delta_t; E_HEUN; error_reduction_HEUN]
+errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
