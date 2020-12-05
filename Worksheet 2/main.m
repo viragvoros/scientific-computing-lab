@@ -7,12 +7,20 @@ t_end = 5;                                        % Last value of time
 delta_t = [1 0.5 0.25 0.125];                     % Timestep sizes
 p0 = 1;                                           % Initial condition
 
+% Cell array where results(i, j) is the array of points for the i-th delta_t 
+% computed with the method j (Euler = 1, Heun = 2, Runge-Kutta = 3)
+results = cell(length(delta_t), 3);
+
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
     
     p_EULER = odeEULER(@dpdt, p0, delta_t(i), t_end);
     p_HEUN = odeHEUN(@dpdt, p0, delta_t(i), t_end);
     p_RUNGE = odeRUNGE(@dpdt, p0, delta_t(i), t_end);
+    
+    %% TODO : MERGE
+    results{i, 1} = p_EULER;
+    %% 
     
     % Calling exact value of the analytical solution
     p_exact = calcEXACT(t.');
@@ -80,3 +88,18 @@ errors_EULER = [delta_t; E_EULER; error_reduction_EULER]
 errors_HEUN = [delta_t; E_HEUN; error_reduction_HEUN]
 errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
 %--------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Calculating the approximate error C)iv)
+errors_red_EULER = zeros(1, length(delta_t));
+
+sample_t = 0:delta_t(end):t_end;
+
+for i = 1:(length(delta_t)-1)
+    t = 0:delta_t(i):t_end; 
+    
+    delta_euler = (results{i, 1}' - interp1(sample_t, results{length(delta_t), 1}, t));
+    error_euler = sqrt (dot(delta_euler, delta_euler) * delta_t(i) / t_end)
+end
