@@ -86,11 +86,8 @@ end
 
 % There is transposition such that error_reduction[i,j] gives the error
 % reduction from the i-1 to the i step, with the j-th method
-error_reduction = [[0,0,0]', ERRORS(2:end, :) ./ ERRORS(1:end-1, :)]';
+error_reduction = [0,0,0; (ERRORS(2:end, :) ./ ERRORS(1:end-1, :))];
 
-error_reduction_EULER = [0, E_EULER(2:end) ./ E_EULER(1:end-1)];
-error_reduction_HEUN = [0, E_HEUN(2:end) ./ E_HEUN(1:end-1)];
-error_reduction_RUNGE = [0, E_RUNGE(2:end) ./ E_RUNGE(1:end-1)];
 
 %--------------------------------------------------------------------------
 
@@ -120,7 +117,7 @@ end
 %--------------------------------------------------------------------------
 
 % Displaying errors
-T_EULER = table([delta_t; E_EULER; error_reduction_EULER; errors_app_EULER],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_HEUN = table([delta_t; E_HEUN; error_reduction_HEUN; errors_app_HEUN],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_RUNGE = table([delta_t; E_RUNGE; error_reduction_RUNGE; errors_app_RUNGE],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_EULER = table([delta_t; E_EULER; error_reduction(:, 1)'; errors_app_EULER],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_HEUN = table([delta_t; E_HEUN; error_reduction(:, 2)'; errors_app_HEUN],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_RUNGE = table([delta_t; E_RUNGE; error_reduction(:, 3)'; errors_app_RUNGE],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
 
