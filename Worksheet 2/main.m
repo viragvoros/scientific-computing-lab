@@ -95,10 +95,7 @@ error_reduction = [0,0,0; (ERRORS(2:end, :) ./ ERRORS(1:end-1, :))];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Calculating the approximate error C)iv)
-errors_app_EULER = zeros(1, length(delta_t));
-errors_app_HEUN = zeros(1, length(delta_t));
-errors_app_RUNGE = zeros(1, length(delta_t));
-
+error_app = zeros(length(delta_t), 3);
 
 sample_t = 0:delta_t(end):t_end;
 
@@ -109,15 +106,15 @@ for i = 1:(length(delta_t)-1)
     delta_heun = (results{i, 2}' - interp1(sample_t, results{length(delta_t), 2}, t));
     delta_runge = (results{i, 3}' - interp1(sample_t, results{length(delta_t), 3}, t));
     
-    errors_app_EULER(i) = sqrt (dot(delta_euler, delta_euler) * delta_t(i) / t_end);
-    errors_app_HEUN(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
-    errors_app_RUNGE(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
+    error_app(i, 1) = sqrt (dot(delta_euler, delta_euler) * delta_t(i) / t_end);
+    error_app(i, 2) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
+    error_app(i, 3) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
 end
 
 %--------------------------------------------------------------------------
 
 % Displaying errors
-T_EULER = table([delta_t; E_EULER; error_reduction(:, 1)'; errors_app_EULER],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_HEUN = table([delta_t; E_HEUN; error_reduction(:, 2)'; errors_app_HEUN],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_RUNGE = table([delta_t; E_RUNGE; error_reduction(:, 3)'; errors_app_RUNGE],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_EULER = table([delta_t; E_EULER; error_reduction(:, 1)'; error_app(:, 1)'],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_HEUN = table([delta_t; E_HEUN; error_reduction(:, 2)'; error_app(:, 2)'],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_RUNGE = table([delta_t; E_RUNGE; error_reduction(:, 3)'; error_app(:, 3)'],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
 
