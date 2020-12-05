@@ -99,6 +99,12 @@ sample_t = 0:delta_t(end):t_end;
 for i = 1:(length(delta_t)-1)
     t = 0:delta_t(i):t_end; 
     
+    %We use interp1 to pick the result of the best evaluation to avoid
+    %complexe computations of which point to use and so on. Actually, true
+    %points will be used and not interpolated, but this gives additionnal
+    %flexibility in case we want to use time stepping that are not each
+    %half of the previous one
+    
     delta_euler = (results{i, 1}' - interp1(sample_t, results{length(delta_t), 1}, t));
     delta_heun = (results{i, 2}' - interp1(sample_t, results{length(delta_t), 2}, t));
     delta_runge = (results{i, 3}' - interp1(sample_t, results{length(delta_t), 3}, t));
