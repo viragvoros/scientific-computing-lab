@@ -55,7 +55,7 @@ for i = 1:3
     grid on;
     box on;
     
-    plot(tt, analytical_solution(:, 1), '--', 'LineWidth', 2);
+    plot(tt, analytical_solution(1, :), '--', 'LineWidth', 2);
     
     legend_info{length(delta_t) + 1} = ('Analytical solution');
     legend(legend_info);
