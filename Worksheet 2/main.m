@@ -120,8 +120,7 @@ end
 %--------------------------------------------------------------------------
 
 % Displaying errors
+T_EULER = table([delta_t; E_EULER; error_reduction_EULER; errors_app_EULER],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_HEUN = table([delta_t; E_HEUN; error_reduction_HEUN; errors_app_HEUN],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_RUNGE = table([delta_t; E_RUNGE; error_reduction_RUNGE; errors_app_RUNGE],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
 
-
-errors_EULER = [delta_t; E_EULER; error_reduction_EULER]
-errors_HEUN = [delta_t; E_HEUN; error_reduction_HEUN]
-errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
