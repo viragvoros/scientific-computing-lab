@@ -14,34 +14,32 @@ results = cell(length(delta_t), 3);
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
     
-    p_EULER = odeEULER(@dpdt, p0, delta_t(i), t_end);
-    p_HEUN = odeHEUN(@dpdt, p0, delta_t(i), t_end);
-    p_RUNGE = odeRUNGE(@dpdt, p0, delta_t(i), t_end);
+    results{i, 1} = odeEULER(@dpdt, p0, delta_t(i), t_end);
+    results{i, 2} = odeHEUN(@dpdt, p0, delta_t(i), t_end);
+    results{i, 3} = odeRUNGE(@dpdt, p0, delta_t(i), t_end);
     
-    %% TODO : MERGE
-    results{i, 1} = p_EULER;
-    %% 
+
     
     % Calling exact value of the analytical solution
     p_exact = calcEXACT(t.');
     
     % Calculating error C)ii)
-    E_EULER(i) = sqrt((delta_t(i) / t_end) * sum((p_EULER - p_exact).^2));
-    E_HEUN(i) = sqrt((delta_t(i) / t_end) * sum((p_HEUN - p_exact).^2));
-    E_RUNGE(i) = sqrt((delta_t(i) / t_end) * sum((p_RUNGE - p_exact).^2));
+    E_EULER(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 1} - p_exact).^2));
+    E_HEUN(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 2} - p_exact).^2));
+    E_RUNGE(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 3} - p_exact).^2));
     
     legend_info{i} = sprintf('Step size = %1.3f', delta_t(i));
     
     figure(1);
-    plot(t, p_EULER(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 1}(:, 1), 'LineWidth', 1);
     hold on;
     
     figure(2);
-    plot(t, p_HEUN(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 2}(:, 1), 'LineWidth', 1);
     hold on;
     
     figure(3);
-    plot(t, p_RUNGE(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 3}(:, 1), 'LineWidth', 1);
     hold on;
 end
 
@@ -93,7 +91,10 @@ errors_RUNGE = [delta_t; E_RUNGE; error_reduction_RUNGE]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Calculating the approximate error C)iv)
-errors_red_EULER = zeros(1, length(delta_t));
+errors_app_EULER = zeros(1, length(delta_t));
+errors_app_HEUN = zeros(1, length(delta_t));
+errors_app_RUNGE = zeros(1, length(delta_t));
+
 
 sample_t = 0:delta_t(end):t_end;
 
@@ -101,5 +102,10 @@ for i = 1:(length(delta_t)-1)
     t = 0:delta_t(i):t_end; 
     
     delta_euler = (results{i, 1}' - interp1(sample_t, results{length(delta_t), 1}, t));
-    error_euler = sqrt (dot(delta_euler, delta_euler) * delta_t(i) / t_end)
+    delta_heun = (results{i, 2}' - interp1(sample_t, results{length(delta_t), 2}, t));
+    delta_runge = (results{i, 3}' - interp1(sample_t, results{length(delta_t), 3}, t));
+    
+    errors_app_EULER(i) = sqrt (dot(delta_euler, delta_euler) * delta_t(i) / t_end);
+    errors_app_HEUN(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
+    errors_app_RUNGE(i) = sqrt (dot(delta_heun, delta_heun) * delta_t(i) / t_end);
 end
