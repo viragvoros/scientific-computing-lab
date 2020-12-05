@@ -1,5 +1,5 @@
-clear all;
 close all;
+clear all;
 clc;
 
 % Initial parameters
@@ -29,9 +29,6 @@ for i = 1:length(delta_t)
     for j=1:3
         ERRORS(i, j) = sqrt((delta_t(i) / t_end) * sum((results{i, j} - p_exact).^2));
     end
-    E_EULER(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 1} - p_exact).^2));
-    E_HEUN(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 2} - p_exact).^2));
-    E_RUNGE(i) = sqrt((delta_t(i) / t_end) * sum((results{i, 3} - p_exact).^2));
     
     legend_info{i} = sprintf('Step size = %1.3f', delta_t(i));
     
@@ -114,7 +111,7 @@ end
 %--------------------------------------------------------------------------
 
 % Displaying errors
-T_EULER = table([delta_t; E_EULER; error_reduction(:, 1)'; error_app(:, 1)'],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_HEUN = table([delta_t; E_HEUN; error_reduction(:, 2)'; error_app(:, 2)'],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
-T_RUNGE = table([delta_t; E_RUNGE; error_reduction(:, 3)'; error_app(:, 3)'],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_EULER = table([delta_t; ERRORS(:, 1)'; error_reduction(:, 1)'; error_app(:, 1)'],'VariableNames',{'explicit Euler method (q = 1)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_HEUN = table([delta_t; ERRORS(:, 2)'; error_reduction(:, 2)'; error_app(:, 2)'],'VariableNames',{'method of Heun (q = 2)'}, 'RowNames',{'δt','error','error red.','error app.'})
+T_RUNGE = table([delta_t; ERRORS(:, 3)'; error_reduction(:, 3)'; error_app(:, 3)'],'VariableNames',{'Runge-Kutta method (q = 4)'}, 'RowNames',{'δt','error','error red.','error app.'})
 
