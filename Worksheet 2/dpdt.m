@@ -1,6 +1,6 @@
 function dp = dpdt(p)
 % dpdt computes the derivative represented by the ODE defined as
-% dp/dt = (1 - p/10) * p
+% dp/dt = (1 - p/10) * p.
 %
 % Inputs:
 %   p  = Value of p in the ODE.
