@@ -8,6 +8,6 @@ function value = calcEXACT(t)
 % Outputs:
 %   value = Output of the analytical function at time t.
 
-value = 200 ./ (20 + 10*exp(-7 * t));
+value = 200 ./ (20 - 10*exp(-7 * t));
 
 end
