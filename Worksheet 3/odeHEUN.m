@@ -17,15 +17,11 @@ t_init = 0;
 % Number of calculated points
 N = floor((t_end - t_init) / delta_t) + 1;
 
-% Initialize t and p vectors with the initial condition
-t = zeros(N, 1);
+% Initialize the p vector with the initial condition
 p = zeros(N, 1);
-t(1) = 0;
 p(1) = p0;
 
 for i = 1:N - 1
-    t(i+1) = t(i) + delta_t;
-    
     % Calculate intermediate values
     y_n = ODE(p(i));
     y_n_plus_1 = ODE(p(i) + y_n * delta_t);
