@@ -2,6 +2,10 @@ close all;
 clear all;
 clc;
 
+% Defining the ODE and the exact solution
+ode = @(p) 7 * (1 - p/10) * p;
+solution = @(t) 200 ./ (20 - 10 * exp(-7 * t));
+
 % Initial parameters
 t_end = 5;
 delta_t = [0.5 0.25 0.125 0.0625 0.03125];
@@ -17,11 +21,11 @@ error_exact = zeros(length(delta_t), 2);
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
     
-    results{i, 1} = odeEULER(@dpdt, p0, delta_t(i), t_end);
-    results{i, 2} = odeHEUN(@dpdt, p0, delta_t(i), t_end);
+    results{i, 1} = odeEULER(ode, p0, delta_t(i), t_end);
+    results{i, 2} = odeHEUN(ode, p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
-    p_exact = calcEXACT(t.');
+    p_exact = solution(t.');
     
     % Calculating the exact error for each method in the current time step
     for j = 1:2
@@ -46,7 +50,7 @@ end
 
 titles = ["Euler method" "Heun method"];
 tt = linspace(0, t_end);
-analytical_solution = calcEXACT(tt);
+analytical_solution = solution(tt);
 
 for i = 1:2
     figure(i);
