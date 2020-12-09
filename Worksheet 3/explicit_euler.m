@@ -1,5 +1,5 @@
-function p = odeEULER(ODE, p0, delta_t, t_end)
-% odeEULER uses the Explicit Euler Method to compute discrete points of
+function p = explicit_euler(ODE, p0, delta_t, t_end)
+% explicit_euler uses the Explicit Euler Method to compute discrete points of
 % the solution function for the given ODE.
 %
 % Inputs:

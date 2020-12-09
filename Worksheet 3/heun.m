@@ -1,6 +1,6 @@
-function p = odeIMPEULER(ODE, p0, delta_t, t_end)
-% odeIMPEULER uses the Implicit Euler Method to compute discrete points of
-% the solution function for the given ODE.
+function p = heun(ODE, p0, delta_t, t_end)
+% heun uses Heun's Method to compute discrete points of the solution
+% function for the given ODE.
 %
 % Inputs:
 %   ODE     = Derivative function that takes the p value.
@@ -22,12 +22,12 @@ p = zeros(N, 1);
 p(1) = p0;
 
 for i = 1:N - 1
-    % Definition: y(n+1) = y(n) + y'(n+1) * Δt
-    % We change it to 0 = y(n) + y'(n+1) * Δt - y(n+1) and find the root,
-    % which is the value of p(i+1). The starting value is set to p(i)
-    % because it's a reasonably close value to p(i+1).
-    func = @(y) p(i) + ODE(y) * delta_t - y;
-    p(i+1) = fzero(func, p(i));
+    % Calculate intermediate values
+    y_n = ODE(p(i));
+    y_n_plus_1 = ODE(p(i) + y_n * delta_t);
+    
+    % Definition: y(n+1) = y(n) + 0.5 * Δt * (y'(n) + y'(n+1))
+    p(i+1) = p(i) + 0.5 * delta_t * (y_n + y_n_plus_1);
 end
 
 end
