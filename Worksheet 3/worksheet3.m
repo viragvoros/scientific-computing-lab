@@ -12,23 +12,25 @@ delta_t = [0.5 0.25 0.125 0.0625 0.03125];
 p0 = 20;
 
 % Cell array where results(i, j) is the array of points for the i-th
-% delta_t computed with the method j (Euler = 1, Heun = 2)
-results = cell(length(delta_t), 2);
+% delta_t computed with the method j (Explicit Euler = 1, Heun = 2,
+% Implicit Euler = 3)
+results = cell(length(delta_t), 3);
 
 % Exact error for the i-th delta_t and j-th method
-error_exact = zeros(length(delta_t), 2);
+error_exact = zeros(length(delta_t), 3);
 
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
-    
-    results{i, 1} = odeEULER(ode, p0, delta_t(i), t_end);
-    results{i, 2} = odeHEUN(ode, p0, delta_t(i), t_end);
+
+    results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
+    results{i, 2} = heun(ode, p0, delta_t(i), t_end);
+    results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
     
     % Calculating the exact error for each method in the current time step
-    for j = 1:2
+    for j = 1:3
         error_exact(i, j) = sqrt(delta_t(i) / t_end * sum((results{i, j} - p_exact).^2));
     end
     
@@ -41,6 +43,10 @@ for i = 1:length(delta_t)
     figure(2);
     plot(t, results{i, 2}(:, 1), 'LineWidth', 1);
     hold on;
+    
+    figure(3);
+    plot(t, results{i, 3}(:, 1), 'LineWidth', 1);
+    hold on;
 end
 
 
@@ -48,11 +54,11 @@ end
 % SETTING UP THE FIGURES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-titles = ["Euler method" "Heun method"];
+titles = ["Explicit Euler method" "Heun method" "Implicit Euler Method"];
 tt = linspace(0, t_end);
 analytical_solution = solution(tt);
 
-for i = 1:2
+for i = 1:3
     figure(i);
 
     title(titles(i));
@@ -82,7 +88,7 @@ end
 
 % The element at error_reduction[i, j] gives the error reduction from the
 % i-1 to the i step, with the j-th method.
-error_reduction = [0, 0; error_exact(2:end, :) ./ error_exact(1:end-1, :)];
+error_reduction = [0, 0, 0; error_exact(2:end, :) ./ error_exact(1:end-1, :)];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +96,7 @@ error_reduction = [0, 0; error_exact(2:end, :) ./ error_exact(1:end-1, :)];
 
 
 % Calculating the approximate error
-error_app = zeros(length(delta_t), 2);
+error_app = zeros(length(delta_t), 3);
 
 sample_t = 0:delta_t(end):t_end;
 
@@ -109,9 +115,11 @@ for i = 1:(length(delta_t) - 1)
     
     delta_euler = results{i, 1}.' - interp1(sample_t, results{end, 1}, t);
     delta_heun = results{i, 2}.' - interp1(sample_t, results{end, 2}, t);
+    delta_impeuler = results{i, 3}.' - interp1(sample_t, results{end, 3}, t);
     
     error_app(i, 1) = sqrt(delta_t(i) / t_end * dot(delta_euler, delta_euler));
     error_app(i, 2) = sqrt(delta_t(i) / t_end * dot(delta_heun, delta_heun));
+    error_app(i, 3) = sqrt(delta_t(i) / t_end * dot(delta_impeuler, delta_impeuler));
 end
 
 
@@ -120,15 +128,21 @@ end
 
 
 % Displaying errors
-T_EULER = table( ...
+table_explicit_euler = table( ...
     [delta_t; error_exact(:, 1).'; error_reduction(:, 1).'; error_app(:, 1).'], ...
     'VariableNames', {'Explicit Euler method (q = 1)'}, ...
     'RowNames', {'δt', 'error', 'error red.', 'error app.'} ...
 )
 
-T_HEUN = table( ...
+table_heun = table( ...
     [delta_t; error_exact(:, 2).'; error_reduction(:, 2).'; error_app(:, 2).'], ...
     'VariableNames', {'Method of Heun (q = 2)'}, ...
+    'RowNames', {'δt', 'error', 'error red.', 'error app.'} ...
+)
+
+table_implicit_euler = table( ...
+    [delta_t; error_exact(:, 3).'; error_reduction(:, 3).'; error_app(:, 3).'], ...
+    'VariableNames', {'Implicit Euler method (q = 1)'}, ...
     'RowNames', {'δt', 'error', 'error red.', 'error app.'} ...
 )
 
