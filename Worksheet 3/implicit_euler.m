@@ -1,9 +1,10 @@
-function p = implicit_euler(ODE, p0, delta_t, t_end)
+function p = implicit_euler(ODE, dODE, p0, delta_t, t_end)
 % implicit_euler uses the Implicit Euler Method to compute discrete points of
 % the solution function for the given ODE.
 %
 % Inputs:
 %   ODE     = Derivative function that takes the p value.
+%   dODE    = Derivative of ODE
 %   p0      = Initial value (at t0 = 0).
 %   delta_t = Size of the time step.
 %   t_end   = Last t value where to stop stepping.
@@ -27,7 +28,8 @@ for i = 1:N - 1
     % which is the value of p(i+1). The starting value is set to p(i)
     % because it's a reasonably close value to p(i+1).
     func = @(y) p(i) + ODE(y) * delta_t - y;
-    p(i+1) = fzero(func, p(i));
+    dfunc = @(y) dODE(y) * delta_t - 1;
+    p(i+1) = newton_method(func, dfunc, p(i), 1e-4);
 end
 
 end
