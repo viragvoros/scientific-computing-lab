@@ -92,16 +92,16 @@ end
 
 
 % Calculating the factor of error reduction if the step size is halved.
-% Error reduction is the error of a given time step divided by the error of
-% the previous, bigger, time step, hence an element-wise division of the
-% array with itself but "shifted". A padding row is added because the first
-% time step does not have any previous time step to compare the error with.
+% Error reduction is the error of the previous and bigger time step divided
+% by the given time step, hence an element-wise division of the array with
+% itself but "shifted". A padding row is added because the first time step
+% does not have any previous time step to compare the error with.
 
 % The element at error_reduction[i, j] gives the error reduction from the
 % i-1 to the i step, with the j-th method.
 error_reduction = [ ...
     0, 0, 0, 0; ...
-	error_exact(2:end, :) ./ error_exact(1:end-1, :) ...
+	error_exact(1:end-1, :) ./ error_exact(2:end, :) ...
 ];
 
 
