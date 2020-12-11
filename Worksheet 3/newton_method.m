@@ -19,8 +19,9 @@ while abs(f(x)) >= tol && nb_iterations < max_iter
    nb_iterations = nb_iterations + 1;
 end
 
-if nb_iterations >= max_iter || isinf(x) || isnan(x)
-   error("Newton method doesn't converge ! Try another guess value or tolerance") 
+% TODO: Add back condition `nb_iterations >= max_iter` 
+if isinf(x) || isnan(x)
+   error("Newton method doesn't converge! Try another guess value or tolerance.") 
 end
 
 end

@@ -14,11 +14,11 @@ p0 = 20;
 
 % Cell array where results(i, j) is the array of points for the i-th
 % delta_t computed with the method j (Explicit Euler = 1, Heun = 2,
-% Implicit Euler = 3)
-results = cell(length(delta_t), 3);
+% Implicit Euler = 3, Adams-Moulton = 4)
+results = cell(length(delta_t), 4);
 
 % Exact error for the i-th delta_t and j-th method
-error_exact = zeros(length(delta_t), 3);
+error_exact = zeros(length(delta_t), 4);
 
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
@@ -26,12 +26,13 @@ for i = 1:length(delta_t)
     results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
     results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
+    results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
     
     % Calculating the exact error for each method in the current time step
-    for j = 1:3
+    for j = 1:4
         error_exact(i, j) = sqrt(delta_t(i) / t_end * sum((results{i, j} - p_exact).^2));
     end
     
@@ -48,6 +49,10 @@ for i = 1:length(delta_t)
     figure(3);
     plot(t, results{i, 3}(:, 1), 'LineWidth', 1);
     hold on;
+    
+    figure(4);
+    plot(t, results{i, 4}(:, 1), 'LineWidth', 1);
+    hold on;
 end
 
 
@@ -55,11 +60,16 @@ end
 % SETTING UP THE FIGURES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-titles = ["Explicit Euler method" "Heun method" "Implicit Euler Method"];
+titles = [ ...
+    "Explicit Euler Method" ...
+    "Heun Method" ...
+    "Implicit Euler Method" ...
+    "Adams-Moulton Method" ...
+];
 tt = linspace(0, t_end);
 analytical_solution = solution(tt);
 
-for i = 1:3
+for i = 1:4
     figure(i);
 
     title(titles(i));
@@ -90,7 +100,7 @@ end
 % The element at error_reduction[i, j] gives the error reduction from the
 % i-1 to the i step, with the j-th method.
 error_reduction = [ ...
-    0, 0, 0; ...
+    0, 0, 0, 0; ...
 	error_exact(2:end, :) ./ error_exact(1:end-1, :) ...
 ];
 
@@ -118,11 +128,11 @@ table_implicit_euler = table( ...
     'RowNames', {'δt', 'error', 'error red.'} ...
 )
 
-% table_adams_moulton = table( ...
-%     [delta_t; error_exact(:, 4).'; error_reduction(:, 4).'], ...
-%     'VariableNames', {'Adams-Moulton'}, ...
-%     'RowNames', {'δt', 'error', 'error red.'} ...
-% )
+table_adams_moulton = table( ...
+    [delta_t; error_exact(:, 4).'; error_reduction(:, 4).'], ...
+    'VariableNames', {'Adams-Moulton'}, ...
+    'RowNames', {'δt', 'error', 'error red.'} ...
+)
 
 % table_adams_moulton_lin1 = table( ...
 %     [delta_t; error_exact(:, 5).'; error_reduction(:, 5).'], ...
