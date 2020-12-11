@@ -4,6 +4,7 @@ clc;
 
 % Defining the ODE and the exact solution
 ode = @(p) 7 * (1 - p/10) * p;
+dode = @(p) 7 - 1.4 * p;
 solution = @(t) 200 ./ (20 - 10 * exp(-7 * t));
 
 % Initial parameters
@@ -24,7 +25,7 @@ for i = 1:length(delta_t)
 
     results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
-    results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end);
+    results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
