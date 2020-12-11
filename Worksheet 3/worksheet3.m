@@ -25,7 +25,7 @@ for i = 1:length(delta_t)
 
     results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
-    results{i, 3} = implicit_euler(ode, dode, p0, delta_t(i), t_end);
+    results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
