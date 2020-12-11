@@ -1,5 +1,5 @@
-function p = implicit_euler(ODE, p0, delta_t, t_end, dODE)
-% implicit_euler uses the Implicit Euler Method to compute discrete points of
+function p = adams_moulton(ODE, p0, delta_t, t_end, dODE)
+% adams_moulton uses the Adams-Moulton method to compute discrete points of
 % the solution function for the given ODE.
 %
 % Inputs:
@@ -27,8 +27,8 @@ for i = 1:N - 1
     % We change it to 0 = y(n) + y'(n+1) * Δt - y(n+1) and find the root,
     % which is the value of p(i+1). The starting value is set to p(i)
     % because it's a reasonably close value to p(i+1).
-    func = @(y) p(i) + ODE(y) * delta_t - y;
-    dfunc = @(y) dODE(y) * delta_t - 1;
+    func = @(y) p(i) + (ODE(y) + ODE(p(i))) * delta_t / 2 - y;
+    dfunc = @(y) dODE(y) * delta_t / 2 - 1;
     
     p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
 end
