@@ -141,8 +141,8 @@ table_implicit_euler = table( ...
 
 
 % Examining stability
-stability_explicit_euler = [' ';' ';' ';' ';' '];
-stability_heun = [' ';' ';' ';' ';' '];
+stability_explicit_euler = [' ';' ';'x';'x';'x'];
+stability_heun = [' ';' ';'x';'x';'x'];
 stability_implicit_euler = ['x';'x';'x';'x';'x'];
 stability_adams_moulton = [' ';' ';' ';' ';' '];
 stability_adams_moulton_lin1 = [' ';' ';' ';' ';' '];
