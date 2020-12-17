@@ -28,8 +28,8 @@ for i = 1:length(delta_t)
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
     results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
     results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
-    results{i, 5} = adams_moulton_l1(ode, p0, delta_t(i), t_end);
-    results{i, 6} = adams_moulton_l2(ode, p0, delta_t(i), t_end);
+    results{i, 5} = adams_moulton_l1(p0, delta_t(i), t_end);
+    results{i, 6} = adams_moulton_l2(p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
