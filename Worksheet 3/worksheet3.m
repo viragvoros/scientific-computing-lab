@@ -54,30 +54,34 @@ for i = 1:length(delta_t)
         error_exact(i, j) = sqrt(delta_t(i) / t_end * sum((results{i, j} - p_exact).^2));
     end
     
-    legend_info{i} = sprintf('Step size = %1.3f', delta_t(i));
+    legend_string = sprintf('Step size = %1.3f', delta_t(i));
     
     figure(1);
-    plot(t, results{i, 1}(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 1}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
     hold on;
     
     figure(2);
-    plot(t, results{i, 2}(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 2}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
     hold on;
     
-    figure(3);
-    plot(t, results{i, 3}(:, 1), 'LineWidth', 1);
-    hold on;
+    if ~isnan(results{i, 3})
+        figure(3);
+        plot(t, results{i, 3}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
+        hold on;
+    end
     
-    figure(4);
-    plot(t, results{i, 4}(:, 1), 'LineWidth', 1);
-    hold on;
-    
+    if ~isnan(results{i, 4})
+        figure(4);
+        plot(t, results{i, 4}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
+        hold on;
+    end
+        
     figure(5);
-    plot(t, results{i, 5}(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 5}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
     hold on;
     
     figure(6);
-    plot(t, results{i, 6}(:, 1), 'LineWidth', 1);
+    plot(t, results{i, 6}(:, 1), 'LineWidth', 1, 'DisplayName', legend_string);
     hold on;
 end
 
@@ -109,10 +113,9 @@ for i = 1:6
     xlim([0 5])
     ylim([0 20])
     
-    plot(tt, analytical_solution, '--', 'LineWidth', 2);
+    plot(tt, analytical_solution, '--', 'LineWidth', 2, 'DisplayName', 'Analytical solution');
     
-    legend_info{length(delta_t) + 1} = ('Analytical solution');
-    legend(legend_info);
+    legend();
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
