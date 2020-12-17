@@ -30,7 +30,13 @@ for i = 1:N - 1
     func = @(y) p(i) + ODE(y) * delta_t - y;
     dfunc = @(y) dODE(y) * delta_t - 1;
     
-    p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    try
+       p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    catch err
+        new_err.identifier = 'euler:no_sol';
+        new_err.message = sprintf('Implicit Euler divergence at step %d with dt %f.', i, delta_t);
+        error(new_err)
+    end
 end
 
 end

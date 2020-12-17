@@ -11,6 +11,8 @@ function p = adams_moulton(ODE, p0, delta_t, t_end, dODE)
 %
 % Outputs:
 %   p       = Vector containing the approximated values of p.
+%
+% Throws an error if Newton solver doesn't converge
 
 % Where to start stepping from
 t_init = 0;
@@ -30,7 +32,13 @@ for i = 1:N - 1
     func = @(y) p(i) + (ODE(y) + ODE(p(i))) * delta_t / 2 - y;
     dfunc = @(y) dODE(y) * delta_t / 2 - 1;
     
-    p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    try
+        p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    catch err
+        new_err.identifier = 'adams_moulton:no_sol';
+        new_err.message = sprintf('Adams-Moulton divergence at step %d with dt %f.', i, delta_t);
+        error(new_err)
+    end
 end
 
 end

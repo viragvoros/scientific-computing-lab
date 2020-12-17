@@ -20,8 +20,10 @@ while abs(f(x)) >= tol && nb_iterations < max_iter
 end
 
 % TODO: Add back condition `nb_iterations >= max_iter` 
-if isinf(x) || isnan(x)
-   error("Newton method doesn't converge! Try another guess value or tolerance.") 
+if isinf(x) || isnan(x) || abs(f(x)) > tol
+   err.message = 'Couldn'' find a precise solution';
+   err.identifier = 'newton_method:divergence';
+   error(err);
 end
 
 end

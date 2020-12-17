@@ -26,8 +26,23 @@ for i = 1:length(delta_t)
 
     results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
-    results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
-    results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
+    
+    %For both implicit schemes, we stop if Newton method doesn't converge,
+    %and put NaN as a result. (Technically, we initialize it as NaN then
+    %try to put the computed solution)
+    try
+        results{i, 3} = NaN;
+        results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
+    catch e
+        disp(e.message)
+    end
+    
+    try
+        results{i, 4} = NaN;
+        results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
+    catch e
+        disp(e.message)
+    end
     results{i, 5} = adams_moulton_l1(ode, p0, delta_t(i), t_end);
     results{i, 6} = adams_moulton_l2(ode, p0, delta_t(i), t_end);
     
