@@ -1,7 +1,7 @@
 function p = adams_moulton_l1(p0, delta_t, t_end)
 % adams_moulton_l1 uses the Adams-Moulton method in a linearized form to
-% compute discrete points of the solution function for the given ODE, even
-% for unstable time step sizes.
+% compute discrete points of the solution function for the given problem
+% from the worksheet, even when Newton method cannot find solutions.
 %
 % Inputs:
 %   p0      = Initial value (at t0 = 0).
