@@ -14,11 +14,12 @@ p0 = 20;
 
 % Cell array where results(i, j) is the array of points for the i-th
 % delta_t computed with the method j (Explicit Euler = 1, Heun = 2,
-% Implicit Euler = 3, Adams-Moulton = 4)
-results = cell(length(delta_t), 4);
+% Implicit Euler = 3, Adams-Moulton = 4, Adams-Moulton - l1 = 5,
+% Adams-Moulton - l2 = 6).
+results = cell(length(delta_t), 6);
 
 % Exact error for the i-th delta_t and j-th method
-error_exact = zeros(length(delta_t), 4);
+error_exact = zeros(length(delta_t), 6);
 
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
@@ -27,12 +28,14 @@ for i = 1:length(delta_t)
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
     results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
     results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
+    results{i, 5} = adams_moulton_l1(ode, p0, delta_t(i), t_end);
+    results{i, 6} = adams_moulton_l2(ode, p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
     
     % Calculating the exact error for each method in the current time step
-    for j = 1:4
+    for j = 1:6
         error_exact(i, j) = sqrt(delta_t(i) / t_end * sum((results{i, j} - p_exact).^2));
     end
     
@@ -53,6 +56,14 @@ for i = 1:length(delta_t)
     figure(4);
     plot(t, results{i, 4}(:, 1), 'LineWidth', 1);
     hold on;
+    
+    figure(5);
+    plot(t, results{i, 5}(:, 1), 'LineWidth', 1);
+    hold on;
+    
+    figure(6);
+    plot(t, results{i, 6}(:, 1), 'LineWidth', 1);
+    hold on;
 end
 
 
@@ -65,11 +76,13 @@ titles = [ ...
     "Heun Method" ...
     "Implicit Euler Method" ...
     "Adams-Moulton Method" ...
+    "Adams-Moulton Method - Linearisation 1" ...
+    "Adams-Moulton Method - Linearisation 2" ...
 ];
 tt = linspace(0, t_end);
 analytical_solution = solution(tt);
 
-for i = 1:4
+for i = 1:6
     figure(i);
 
     title(titles(i));
@@ -100,7 +113,7 @@ end
 % The element at error_reduction[i, j] gives the error reduction from the
 % i-1 to the i step, with the j-th method.
 error_reduction = [ ...
-    0, 0, 0, 0; ...
+    0, 0, 0, 0, 0, 0; ...
 	error_exact(1:end-1, :) ./ error_exact(2:end, :) ...
 ];
 
@@ -134,17 +147,17 @@ table_adams_moulton = table( ...
     'RowNames', {'δt', 'error', 'error red.'} ...
 )
 
-% table_adams_moulton_lin1 = table( ...
-%     [delta_t; error_exact(:, 5).'; error_reduction(:, 5).'], ...
-%     'VariableNames', {'Adams-Moulton – linearisation 1'}, ...
-%     'RowNames', {'δt', 'error', 'error red.'} ...
-% )
+table_adams_moulton_lin1 = table( ...
+    [delta_t; error_exact(:, 5).'; error_reduction(:, 5).'], ...
+    'VariableNames', {'Adams-Moulton – linearisation 1'}, ...
+    'RowNames', {'δt', 'error', 'error red.'} ...
+)
 
-% table_adams_moulton_lin2 = table( ...
-%     [delta_t; error_exact(:, 6).'; error_reduction(:, 6).'], ...
-%     'VariableNames', {'Adams-Moulton – linearisation 2'}, ...
-%     'RowNames', {'δt', 'error', 'error red.'} ...
-% )
+table_adams_moulton_lin2 = table( ...
+    [delta_t; error_exact(:, 6).'; error_reduction(:, 6).'], ...
+    'VariableNames', {'Adams-Moulton – linearisation 2'}, ...
+    'RowNames', {'δt', 'error', 'error red.'} ...
+)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
