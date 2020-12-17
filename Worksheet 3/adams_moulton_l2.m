@@ -22,11 +22,11 @@ p = zeros(N, 1);
 p(1) = p0;
 
 for i = 1:N - 1
-    % Definition: y(n+1) = y(n) + (y'(n) + 7 * (1 - y(n) / 10) * y(n+1)) * Δt / 2
-    % We change it to y(n+1)= (y(n) + (7 * (1 - y(n)/10) * y(n)) * Δt / 2) / (1 - 7 * (1 - y(n) / 10) * Δt / 2 )
+    % Definition: y(n+1) = y(n) + (7 * (1 - y(n) / 10) * y(n) + 7 * (1 - y(n) / 10) * y(n+1)) * Δt / 2
+    % We change it to y(n+1) = (y(n) + (7 * (1 - y(n) / 10) * y(n)) * Δt / 2) / (1 - 7 * (1 - y(n) / 10) * Δt / 2)
     % and find the value of p(i+1) in an explicit form.
     
-    p(i+1)= (p(i) + (7 * (1 - p(i)/10) * p(i)) * delta_t / 2) / (1 - 7 * (1 - p(i) / 10) * delta_t / 2 );
+    p(i+1) = (p(i) + (7 * (1 - p(i) / 10) * p(i)) * delta_t / 2) / (1 - 7 * (1 - p(i) / 10) * delta_t / 2 );
 
 end
 

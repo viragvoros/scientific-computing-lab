@@ -98,6 +98,7 @@ for i = 1:6
     
     legend_info{length(delta_t) + 1} = ('Analytical solution');
     legend(legend_info);
+    legend('Location','northeastoutside')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
