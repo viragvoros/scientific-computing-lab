@@ -35,9 +35,9 @@ for i = 1:N - 1
     try
         p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
     catch err
-        new_err.identifier = 'adams_moulton:no_sol';
-        new_err.message = sprintf('Adams-Moulton divergence at step %d with dt %f.', i, delta_t);
-        error(new_err)
+        fprintf('Adams-Moulton divergence at step %d with dt %f.', i, delta_t);
+        p = NaN;
+        return;
     end
 end
 
