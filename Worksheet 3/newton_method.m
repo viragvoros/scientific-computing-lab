@@ -19,7 +19,6 @@ while abs(f(x)) >= tol && nb_iterations < max_iter
    nb_iterations = nb_iterations + 1;
 end
 
-% TODO: Add back condition `nb_iterations >= max_iter` 
 if isinf(x) || isnan(x) || abs(f(x)) > tol
    err.message = 'Couldn'' find a precise solution';
    err.identifier = 'newton_method:divergence';

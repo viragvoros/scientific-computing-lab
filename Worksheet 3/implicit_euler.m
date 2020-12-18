@@ -10,7 +10,8 @@ function p = implicit_euler(ODE, p0, delta_t, t_end, dODE)
 %   dODE    = Derivative of the ODE, for Newton's Method.
 %
 % Outputs:
-%   p       = Vector containing the approximated values of p.
+%   p       = Vector containing the approximated values of p. NaN if an
+%   error was outputted.
 
 % Where to start stepping from
 t_init = 0;
