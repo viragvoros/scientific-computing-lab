@@ -1,5 +1,5 @@
 function p = adams_moulton(ODE, p0, delta_t, t_end, dODE)
-% adams_moulton uses the Adams-Moulton method to compute discrete points of
+% adams_moulton uses the Adams-Moulton Method to compute discrete points of
 % the solution function for the given ODE.
 %
 % Inputs:

@@ -11,7 +11,7 @@ function p = implicit_euler(ODE, p0, delta_t, t_end, dODE)
 %
 % Outputs:
 %   p       = Vector containing the approximated values of p. NaN if an
-%   error was outputted.
+%             error was outputted.
 
 % Where to start stepping from
 t_init = 0;

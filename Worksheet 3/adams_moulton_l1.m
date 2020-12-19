@@ -1,5 +1,5 @@
 function p = adams_moulton_l1(p0, delta_t, t_end)
-% adams_moulton_l1 uses the Adams-Moulton method in a linearized form to
+% adams_moulton_l1 uses the Adams-Moulton Method in a linearized form to
 % compute discrete points of the solution function for the given problem
 % from the worksheet, even when Newton method cannot find solutions.
 %
@@ -22,11 +22,15 @@ p = zeros(N, 1);
 p(1) = p0;
 
 for i = 1:N - 1
-    % Definition: y(n+1) = y(n) + (7 * (1 - y(n) / 10) * y(n) + 7 * (1 - y(n+1) / 10) * y(n)) * Δt / 2
-    % We change it to y(n+1) = (y(n) + Δt / 2 * ((7 * (1 - y(n) / 10) * y(n)) + 7 * y(n))) / (1 + 7 * y(n) * Δt / 20)
-    % and find the value of p(i+1) in an explicit form.
+    % Definition:
+    % y(n+1) = y(n) + (7 * (1 - y(n) / 10) * y(n) + 7 * (1 - y(n+1) / 10) * y(n)) * Δt / 2
+    %
+    % We change it to find the value of p(i+1) in an explicit form:
+    % y(n+1) = (y(n) + Δt / 2 * ((7 * (1 - y(n) / 10) * y(n)) + 7 * y(n)))...
+    %          / (1 + 7 * y(n) * Δt / 20)
     
-    p(i+1) = (p(i) + delta_t / 2 * ((7 * (1 - p(i) / 10) * p(i)) + 7 * p(i))) / (1 + 7 * p(i) * delta_t / 20);
+    p(i+1) = (p(i) + delta_t / 2 * ((7 * (1 - p(i) / 10) * p(i)) + 7 * p(i)))...
+             / (1 + 7 * p(i) * delta_t / 20);
     
 end
 

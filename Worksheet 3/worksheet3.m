@@ -24,8 +24,8 @@ error_exact = zeros(length(delta_t), 6);
 for i = 1:length(delta_t)
     t = 0:delta_t(i):t_end;
 
-    %For both implicit schemes (3 : implicit Euler, 4 : Adams-Moulton), the solver returns NaN if no solution was
-    %found.
+    % For both implicit schemes (3 : implicit Euler, 4 : Adams-Moulton),
+    % the solver returns NaN if no solution was found.
     results{i, 1} = explicit_euler(ode, p0, delta_t(i), t_end);
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
     results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
@@ -100,7 +100,8 @@ for i = 1:6
     xlim([0 5])
     ylim([0 20])
     
-    plot(tt, analytical_solution, '--', 'LineWidth', 2, 'DisplayName', 'Analytical solution');
+    plot(tt, analytical_solution, '--', 'LineWidth', 2,...
+        'DisplayName', 'Analytical solution');
     
     legend('Location','northeastoutside');
 end
