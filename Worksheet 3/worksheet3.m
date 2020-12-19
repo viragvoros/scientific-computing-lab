@@ -30,8 +30,8 @@ for i = 1:length(delta_t)
     results{i, 2} = heun(ode, p0, delta_t(i), t_end);
     results{i, 3} = implicit_euler(ode, p0, delta_t(i), t_end, dode);
     results{i, 4} = adams_moulton(ode, p0, delta_t(i), t_end, dode);
-    results{i, 5} = adams_moulton_l1(ode, p0, delta_t(i), t_end);
-    results{i, 6} = adams_moulton_l2(ode, p0, delta_t(i), t_end);
+    results{i, 5} = adams_moulton_l1(p0, delta_t(i), t_end);
+    results{i, 6} = adams_moulton_l2(p0, delta_t(i), t_end);
     
     % Calling exact value of the analytical solution
     p_exact = solution(t.');
@@ -102,7 +102,7 @@ for i = 1:6
     
     plot(tt, analytical_solution, '--', 'LineWidth', 2, 'DisplayName', 'Analytical solution');
     
-    legend();
+    legend('Location','northeastoutside');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,21 +168,30 @@ table_adams_moulton_lin2 = table( ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% Examining stability
-stability_explicit_euler = [' ';' ';'x';'x';'x'];
-stability_heun = [' ';' ';'x';'x';'x'];
-stability_implicit_euler = ['x';'x';'x';'x';'x'];
-stability_adams_moulton = [' ';' ';' ';' ';' '];
-stability_adams_moulton_lin1 = [' ';' ';' ';' ';' '];
-stability_adams_moulton_lin2 = [' ';' ';' ';' ';' ']; 
+% Examination of stability is based on the physical meaning of the
+% calculated population values. Stability denotes the applicability of a
+% method. Our simple criterion was that negative population values are
+% unphysical and non-applicable, therefore unstable. Stable cases are
+% marked by a cross in the table_stable_cases tabular.
 
-table_stable_cases = table( ...
-    stability_explicit_euler, ...
-    stability_heun, ...
-    stability_implicit_euler, ...
-    stability_adams_moulton, ...
-    stability_adams_moulton_lin1, ...
-    stability_adams_moulton_lin2, ...
+% String array stability(i, j) is the array of stability for the i-th
+% delta_t computed with the method j (Explicit Euler = 1, Heun = 2,
+% Implicit Euler = 3, Adams-Moulton = 4, Adams-Moulton - l1 = 5,
+% Adams-Moulton - l2 = 6).
+stability = string(zeros(length(delta_t), 6));
+
+for i = 1:length(delta_t)
+ for j = 1:6  
+   if all(results{i, j} >= 0)
+     stability(i,j) = 'x';
+   else
+     stability(i,j) = ' ';
+   end
+ end
+end
+
+table_stable_cases = array2table(...
+    stability, ...
     'VariableNames', { ...
         'Explicit Euler', ...
         'Heun', ...
@@ -199,3 +208,4 @@ table_stable_cases = table( ...
         'δt = 0.03125' ...
     } ...
 ) 
+
