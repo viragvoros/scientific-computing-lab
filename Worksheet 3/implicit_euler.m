@@ -10,7 +10,8 @@ function p = implicit_euler(ODE, p0, delta_t, t_end, dODE)
 %   dODE    = Derivative of the ODE, for Newton's Method.
 %
 % Outputs:
-%   p       = Vector containing the approximated values of p.
+%   p       = Vector containing the approximated values of p. NaN if an
+%   error was outputted.
 
 % Where to start stepping from
 t_init = 0;
@@ -30,7 +31,13 @@ for i = 1:N - 1
     func = @(y) p(i) + ODE(y) * delta_t - y;
     dfunc = @(y) dODE(y) * delta_t - 1;
     
-    p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    try
+        p(i+1) = newton_method(func, dfunc, p(i), 1e-4, 1000);
+    catch err
+        fprintf('Implicit Euler divergence at step %d with dt %f.', i, delta_t);
+        p = NaN;
+        return;
+    end
 end
 
 end
