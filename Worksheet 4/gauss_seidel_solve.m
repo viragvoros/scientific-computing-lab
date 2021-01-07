@@ -77,10 +77,12 @@ while residual > tol_residual && n < max_iter
         end
     end
     
-    residual = norm(residual_vec);
+    % norm(.) gives the 2-norm of the error vector. To use the residual
+    % defined in the workshet, we must divide by sqrt(N)
+    residual = norm(residual_vec) / sqrt(nb_dofs);
     n = n + 1;
     
-    x = reshape(x, Nx, Ny)
+    x = reshape(x, Nx, Ny);
 end
 
 
