@@ -34,6 +34,7 @@ max_iter = 100;
 n = 0;
 
 while residual > tol_residual && n < max_iter
+    % Updating x
     for i = 1:Nx
         for j = 1:Ny
             rhs = 0;
@@ -53,9 +54,31 @@ while residual > tol_residual && n < max_iter
         end
     end
     
-    % TODO !!!
-    %residual = ?? (norm (b-Ax) but no A constructed => painful)
+    %Recomputing residual = |Ax - b|
+    residual_vec = -b;
+    
+    for i = 1:Nx
+        for j = 1:Ny
+            rhs = 0;
+            if i ~= 1
+                rhs = rhs + horizontal_term * x(i-1 + (j-1) * Nx);
+            end
+            if i ~= Nx
+                rhs = rhs + horizontal_term * x(i+1 + (j-1) * Nx);
+            end
+            if j ~= 1
+                rhs = rhs + vertical_term * x(i + (j-2) * Nx);
+            end
+            if j ~= Ny
+                rhs = rhs + vertical_term * x(i + (j) * Nx);
+            end
+            residual_vec(i + (j-1) * Nx) = residual_vec(i + (j-1) * Nx) + main_term * x(i + (j-1) * Nx) + rhs;
+        end
+    end
+    
+    residual = norm(residual_vec);
     n = n + 1;
+    
 end
 
 
