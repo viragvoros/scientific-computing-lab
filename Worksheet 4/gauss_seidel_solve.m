@@ -7,18 +7,19 @@ function x = gauss_seidel_solve(Nx, Ny, b)
 % built.
 % Inputs:
 %   Nx, Ny : dimensions of the grid (number of inner nodes on both axes)
-%   b : column vector of length (Nx * Ny) where the load at vertex (i,j) is
-%   on b(i + (j-1) * Nx)
+%   b : Nx * Ny matrix with the right hand side value at a given point of
+%   the grid
 % Outputs: 
 %   x : Nx * Ny matrix with the nodal values in grid format
 
 nb_dofs = Nx * Ny;
-x = zeros(nb_dofs, 1); %The output will get reshaped to a Nx * Ny matrix in the end
+x = zeros(nb_dofs, 1); % The output will get reshaped to a Nx * Ny matrix in the end
+b = reshape(b, nb_dofs, 1); % Convert the Nx x Ny matrix to a (Nx*Ny) column vector
 
 hx = 1/(Nx+1);
 hy = 1/(Ny+1);
 
-% "Stencil" of the laplacian
+% "Stencil" of the laplacian (coefficients in the matrix)
 main_term = -2/hx + -2/hy;
 horizontal_term = 1/hx;
 vertical_term = 1/hy;
@@ -79,6 +80,7 @@ while residual > tol_residual && n < max_iter
     residual = norm(residual_vec);
     n = n + 1;
     
+    x = reshape(x, Nx, Ny)
 end
 
 
