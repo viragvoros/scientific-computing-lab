@@ -20,9 +20,9 @@ hx = 1/(Nx+1);
 hy = 1/(Ny+1);
 
 % "Stencil" of the laplacian (coefficients in the matrix)
-main_term = -2/hx + -2/hy;
-horizontal_term = 1/hx;
-vertical_term = 1/hy;
+main_term = -2/hx^2 + -2/hy^2;
+horizontal_term = 1/hx^2;
+vertical_term = 1/hy^2;
 
 % Standard gauss_seidel iteration is of the form :
 % x_i^(n+1)  = 1/A(i,i) * (b(i) - sum(j < i) A(i,j)*x_j^(n+1) - sum(j > i)
@@ -34,6 +34,7 @@ tol_residual = 1e-4;
 max_iter = 100;
 n = 0;
 
+% TODO check for convergence
 while residual > tol_residual && n < max_iter
     % Updating x
     for i = 1:Nx
@@ -87,4 +88,5 @@ end
 
 
 
-% TODO : double precision ? (cf WS)
+% TODO
+% Implement storage double precision HERE

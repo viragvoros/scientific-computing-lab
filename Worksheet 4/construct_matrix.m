@@ -21,22 +21,22 @@ A = zeros(nb_dofs);
 for i = 1:Nx
    for j = 1:Ny
        global_dof = i + (j-1) * Nx;
-       A(global_dof, global_dof) = -2/hx -2/hy;
+       A(global_dof, global_dof) = -2/hx^2 -2/hy^2;
        if i ~= 1
             neighbor_dof = (i-1) + (j-1) * Nx;
-            A(neighbor_dof, global_dof) = 1/hx;
+            A(neighbor_dof, global_dof) = 1/hx^2;
        end
        if i ~= Nx
             neighbor_dof = (i+1) + (j-1) * Nx;
-            A(neighbor_dof, global_dof) = 1/hx;
+            A(neighbor_dof, global_dof) = 1/hx^2;
        end
        if j ~= 1
             neighbor_dof = i + (j-2) * Nx;
-            A(neighbor_dof, global_dof) = 1/hy;
+            A(neighbor_dof, global_dof) = 1/hy^2;
        end
        if j ~= Ny
             neighbor_dof = i + (j) * Nx;
-            A(neighbor_dof, global_dof) = 1/hy;
+            A(neighbor_dof, global_dof) = 1/hy^2;
        end
    end
 end
