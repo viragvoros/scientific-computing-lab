@@ -31,10 +31,9 @@ vertical_term = 1/hy^2;
 % is updated in increasing order
 residual = norm(b);
 tol_residual = 1e-4;
-max_iter = 100;
+max_iter = 1e5;
 n = 0;
 
-% TODO check for convergence
 while residual > tol_residual && n < max_iter
     % Updating x
     for i = 1:Nx
@@ -77,7 +76,7 @@ while residual > tol_residual && n < max_iter
             residual_vec(i + (j-1) * Nx) = residual_vec(i + (j-1) * Nx) + main_term * x(i + (j-1) * Nx) + rhs;
         end
     end
-    
+  
     % norm(.) gives the 2-norm of the error vector. To use the residual
     % defined in the workshet, we must divide by sqrt(N)
     residual = norm(residual_vec) / sqrt(nb_dofs);
@@ -86,7 +85,13 @@ while residual > tol_residual && n < max_iter
     x = reshape(x, Nx, Ny);
 end
 
-
+    if isinf(residual) || isnan(residual) || residual > tol_residual
+        err.message = 'Could not find a solution';
+        err.identifier = 'gauss_seidel_method:divergence';
+        error(err);
+    end
 
 % TODO
 % Implement storage double precision HERE
+
+end
