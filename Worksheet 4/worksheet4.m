@@ -42,6 +42,7 @@ for k = 1:length(N_size)
     tic;
     x(2:end-1, 2:end-1) = reshape(A\b_flat, Nx, Ny);
     times(1,k) = toc;
+    storages(1,k) = numel(A) + numel(b_flat) + numel(x);
 
     % Sparse matrix
     A = sparse(A);
@@ -49,11 +50,18 @@ for k = 1:length(N_size)
     x(2:end-1, 2:end-1) = reshape(A\b_flat, Nx, Ny);
     times(2,k) = toc;
     
+    % nnz counts only non-zero elements (elements stored by the sparse
+    % matrix)
+    storages(2,k) = nnz(A) + numel(b_flat) + numel(x);
+    
     % Gauss-Seidel time
     try
         tic;
         x(2:end-1, 2:end-1) = gauss_seidel_solve(Nx, Ny, b);
         times(3,k) = toc;
+        
+        % Gauss-Seisel does not use A so it is not counted
+        storages(3,k) = numel(b) + numel(x);
     catch err
         fprintf('Gauss-Seidel divergence at Nx %d Ny %d.', Nx, Ny);
         x = NaN;    
