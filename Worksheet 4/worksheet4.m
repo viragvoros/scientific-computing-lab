@@ -2,7 +2,9 @@ close all
 clear all
 clc
 
-N_size = [7 15 31 63 127];
+N_size = [3 7 15 31 63 127];
+
+T = cell(length(N_size), 1);
 
 % Running times
 times = zeros(3, length(N_size));
@@ -25,7 +27,7 @@ for k = 1:length(N_size)
     b_func = @(x,y) -2*pi^2 * sin(pi * x) * sin(pi * y);
     for i = 1:Nx
         for j = 1:Ny
-        b(i,j) = b_func(i*hx, j*hy);
+            b(i,j) = b_func(i*hx, j*hy);
         end
     end
 
@@ -49,14 +51,16 @@ for k = 1:length(N_size)
     
     % Gauss-Seidel time
     try
-    tic;
-    x(2:end-1, 2:end-1) = gauss_seidel_solve(Nx, Ny, b);
-    times(3,k) = toc;
+        tic;
+        x(2:end-1, 2:end-1) = gauss_seidel_solve(Nx, Ny, b);
+        times(3,k) = toc;
     catch err
         fprintf('Gauss-Seidel divergence at Nx %d Ny %d.', Nx, Ny);
-        x = NaN;
+        x = NaN;    
     end
 
+    T{k} = x;
+    
     % Calculting errors
     error(k) = sqrt(1/(Nx*Ny)*sum((x(2:end-1, 2:end-1)-analytical).^2, 'all'));
 
@@ -74,15 +78,23 @@ end
 % The element at error_reduction[i] gives the error reduction from the
 % i-1 to the i step.
 
-error_reduction = [ 0, 	error(1:end-1) ./ error(2:end)];
+error_reduction = [ 0, 	error(2:end-1) ./ error(3:end)];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO
 % Setting up the figures
-% plot (contour or contourf ? COntourf seems prettier but WS says contour)
-% contourf(x);
+
+for i=1:length(N_size)-1
+   figure(i);
+   sgtitle(['Nx = Ny = ', num2str(N_size(i))]);
+   
+   subplot(1, 2, 1);
+   surf(T{i});
+   
+   subplot(1, 2, 2);
+   contour(T{i}, 'ShowText','on');
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,25 +102,25 @@ error_reduction = [ 0, 	error(1:end-1) ./ error(2:end)];
 % Displaying tables
 
 full_matrix_table = table( ...
-    [N_size(1:end-1); times(1, 1:end-1); storages(1, 1:end-1)], ...
+    [N_size(2:end-1); times(1, 2:end-1); storages(1, 2:end-1)], ...
     'VariableNames', {'direct solution with full matrix'}, ...
     'RowNames', {'Nx, Ny', 'runtime', 'storage'} ...
 )
 
 sparse_matrix_table = table( ...
-    [N_size(1:end-1); times(2, 1:end-1); storages(2, 1:end-1)], ...
+    [N_size(2:end-1); times(2, 2:end-1); storages(2, 2:end-1)], ...
     'VariableNames', {'direct solution with sparse matrix'}, ...
     'RowNames', {'Nx, Ny', 'runtime', 'storage'} ...
 )
 
 gauss_seidel_table = table( ...
-    [N_size(1:end-1); times(3, 1:end-1); storages(3, 1:end-1)], ...
+    [N_size(2:end-1); times(3, 2:end-1); storages(3, 2:end-1)], ...
     'VariableNames', {'iterative solution with Gauss-Seidel'}, ...
     'RowNames', {'Nx, Ny', 'runtime', 'storage'} ...
 )
 
 gauss_seidel_error_table = table( ...
-    [N_size; error; error_reduction], ...
+    [N_size(2:end); error(2:end); error_reduction], ...
     'VariableNames', {'Errors of Gauss-Seidel method'}, ...
     'RowNames', {'Nx, Ny', 'error', 'error red.'} ...
 )
