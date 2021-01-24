@@ -1,6 +1,6 @@
 % Function to solve 2D heat equation implicitly using Gauss-Seidel iterative solver
 
-function implicit_gauss_seidel(L, n, tolerance, t, dt)
+function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t, dt)
 
     x = linspace(0,L,n);        % x nodes
     y = linspace(0,L,n);        % y nodes
@@ -44,13 +44,11 @@ function implicit_gauss_seidel(L, n, tolerance, t, dt)
         end
         % updating previous values
         T_prev = T;
-        % creating a surface plot
-        figure(2)
-        surf(x,y,T);
-        xlabel('X axis');
-        ylabel('Y axis');
-        title_text = sprintf(['Implicitly using Gauss-Seidel'...
-            '\nNx = Ny = %d \ndt = %g'], n, dt);
-        title(title_text);
+    end
+    
+    if isinf(error) || isnan(error) || error > tolerance
+        err.message = 'Could not find a solution';
+        err.identifier = 'gauss_seidel_method:divergence';
+        error(err);
     end
 end

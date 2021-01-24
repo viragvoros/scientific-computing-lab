@@ -1,6 +1,6 @@
 % Function to solve 2D heat equation explicitly
 
-function explicit(L, n, t, dt)
+function [x,y,T] = explicit(L, n, t, dt)
 
     x = linspace(0,L,n);        % x nodes
     y = linspace(0,L,n);        % y nodes
@@ -32,13 +32,6 @@ function explicit(L, n, t, dt)
         end
         % updating old values
         T_old = T;
-        % creating a surface plot
-        figure(1)
-        surf(x,y,T);
-        xlabel('X axis');
-        ylabel('Y axis');
-        title_text = sprintf(['Explicitly'...
-            '\nNx = Ny = %d \ndt = %g'], n, dt);
-        title(title_text);
+
     end
 end
