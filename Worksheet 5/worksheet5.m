@@ -12,9 +12,9 @@ dt = [1/64, 1/128, 1/256, 1/512, 1/1024, 1/2048, 1/4096]; % time step size
 
 % Examination of stability is based on the physical meaning of the
 % calculated population values. Stability denotes the applicability of a
-% method. Our simple criterion was that negative values are non-applicable,
-% therefore unstable. Stable cases are marked by a cross in the
-% table_stable_cases tabular.
+% method. Our simple criterion was that negative values and values bigger
+% than 1 are unphysical non-applicable, therefore unstable. Stable cases
+% are marked by a cross in the tabulars of stable cases.
 
 % String array stability(l, m, t) is the array of stability for the explicit
 % method for the l-th δt, the m-th grid size and the t-th desired final time.
@@ -27,7 +27,7 @@ for m = 1:length(n)
         [x_exp,y_exp,T_exp] = explicit(L, n(m), final_t(t), dt(l));
         
         %testing stability criterion        
-        if all(T_exp >= 0)
+        if all(T_exp(:) >= 0) && all(T_exp(:) <= 1)
           stability(l,m,t) = 'x';
         else
           stability(l,m,t) = ' ';
@@ -84,7 +84,7 @@ table_stable_cases = array2table(...
         'Nx = Ny = 31', ...
     });
 
-fprintf(['\n\n\nExplicitly at t = %g\n\n'], final_t(t));
+fprintf(['\n\n\nStable cases explicitly at t = %g\n\n'], final_t(t));
 disp(table_stable_cases);
 end
 
