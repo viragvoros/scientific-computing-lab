@@ -1,20 +1,25 @@
 % Function to solve 2D heat equation implicitly using Gauss-Seidel iterative solver
 
-function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t, dt)
+function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t_start, t_end, dt, current_T)
 
     x = linspace(0,L,n);        % x nodes
     y = linspace(0,L,n);        % y nodes
     dx = L/(n-1);               % gird size along x
     dy = L/(n-1);               % grid size along y
-    n_t = t/dt;                 % number of time steps
+    n_t = (t_end-t_start) / dt;                 % number of time steps
     
 
     %Initialization
-    T = ones(n, n);             % initializing T matrix
-    T(:,1) = 0;                 % left boundary condition
-    T(:,n) = 0;                 % right boundary condition
-    T(1,:) = 0;                 % bottom boundary condition
-    T(n,:) = 0;                 % top boundary condition
+    if ~exist('current_T', 'var')
+        T = ones(n, n);             % initializing T matrix
+        T(:,1) = 0;                 % left boundary condition
+        T(:,n) = 0;                 % right boundary condition
+        T(1,:) = 0;                 % bottom boundary condition
+        T(n,:) = 0;                 % top boundary condition
+    else
+        T = current_T;
+    end
+    
     T_old = T;                  % for updation old values in convergence loop
     T_prev = T;
     n_iteration = 1;            % to count the number of total iterations
