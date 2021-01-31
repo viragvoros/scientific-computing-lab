@@ -35,9 +35,9 @@ function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t_start, t_end, dt, cu
     
     % time loop    
     for k = 1:n_t
-        error = 1;              % error initialized to 1 before each time loop
+        residual = 1;              % error initialized to 1 before each time loop
         % convergence loop
-        while error > tolerance && n_iteration < max_iteration
+        while residual > tolerance && n_iteration < max_iteration
             % nodal loop
             for j = 2: (n+1)
                 for i = 2: (n+1)
@@ -47,7 +47,15 @@ function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t_start, t_end, dt, cu
                 end
             end
             % convergence criterion
-            error = max(max(abs(T - T_old)));
+            % Residual^2 = 1/N * sum_i (a_ij*x_j - b_i)
+            % Here : (I-K)*T = 
+            error_matrix = (1+2*k1+2*k2) * T(2:end-1, 2:end-1) - T_prev(2:end-1, 2:end-1) ...
+                - k1*(T(1:end-2, 2:end-1) + T(3:end, 2:end-1)) ...
+                - k2*(T(2:end-1, 1:end-2) + T(2:end-1, 3:end));
+            
+            
+            residual = sqrt(norm(error_matrix)/(n*n));
+
             % updating old values
             T_old = T;
             n_iteration = n_iteration +1;
@@ -56,7 +64,7 @@ function [x,y,T] = implicit_gauss_seidel(L, n, tolerance, t_start, t_end, dt, cu
         T_prev = T;
     end
     
-    if isinf(error) || isnan(error) || error > tolerance
+    if isinf(residual) || isnan(residual) || residual > tolerance
         err.message = 'Could not find a solution';
         err.identifier = 'gauss_seidel_method:divergence';
         error(err);
