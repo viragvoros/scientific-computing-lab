@@ -4,25 +4,25 @@ function [x,y,T] = explicit(L, n, t_start, t_end, dt, current_T)
 
     x = linspace(0,L,n+2);        % x nodes
     y = linspace(0,L,n+2);        % y nodes
-    dx = L/(n+1);               % gird size along x
-    dy = L/(n+1);               % grid size along y
-    n_t = (t_end-t_start) / dt;             % number of time steps
+    dx = L/(n+1);                 % grid size along x
+    dy = L/(n+1);                 % grid size along y
+    n_t = (t_end-t_start) / dt;   % number of time steps
 
 
-    %Initialization
+    % Initialization
     if ~exist('current_T', 'var')
-        T = ones(n+2, n+2);             % initializing T matrix
-        T(:,1) = 0;                 % left boundary condition
-        T(:,end) = 0;                 % right boundary condition
-        T(1,:) = 0;                 % bottom boundary condition
-        T(end,:) = 0;                 % top boundary condition
+        T = ones(n+2, n+2);       % initializing T matrix
+        T(:,1) = 0;               % left boundary condition
+        T(:,end) = 0;             % right boundary condition
+        T(1,:) = 0;               % bottom boundary condition
+        T(end,:) = 0;             % top boundary condition
     else
         T = current_T;
     end
         
-    T_old = T;                  % for updation old values in convergence loop
+    T_old = T;                    % updation old values in convergence loop
 
-    k1 = dt/dx^2;               % for ease of calculation
+    k1 = dt/dx^2;                 % for ease of calculation
     k2 = dt/dy^2;
 
     % time loop    

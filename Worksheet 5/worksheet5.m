@@ -9,9 +9,9 @@ clc
 display_graphs = true;
 save_images = true;
 
-L = 1;                      % domain length along x and y
-n = [3, 7, 15, 31];         % number of grid points along x and y
-tolerance = 1e-6;           % convergence criterion
+L = 1;                          % domain length along x and y
+n = [3, 7, 15, 31];             % number of grid points along x and y
+tolerance = 1e-6;               % convergence criterion
 final_t = [1/8, 2/8, 3/8, 4/8]; % desired time of temperature distribution
 dt = [1/64, 1/128, 1/256, 1/512, 1/1024, 1/2048, 1/4096]; % time step size
 
@@ -42,7 +42,7 @@ for m = 1:length(n)
             T_states{m, l, t, 2} = y_exp;
             T_states{m, l, t, 3} = T_exp;
             
-            %testing stability criterion
+            % testing stability criterion
             if all(T_exp(:) >= 0) && all(T_exp(:) <= 1)
                 stability(l,m,t) = 'x';
             else
@@ -59,12 +59,15 @@ for m = 1:length(n)
         % implicit gauss-seidel
         try
             if t == 1
-                [x_imp, y_imp, T_imp] = implicit_gauss_seidel(L, n(m), tolerance, 0, final_t(t), dt(1));
+                [x_imp, y_imp, T_imp] = implicit_gauss_seidel(L, n(m), ...
+                    tolerance, 0, final_t(t), dt(1));
             else
-                [x_imp, y_imp, T_imp] = implicit_gauss_seidel(L, n(m), tolerance, final_t(t-1), final_t(t), dt(1), T_imp);
+                [x_imp, y_imp, T_imp] = implicit_gauss_seidel(L, n(m), ...
+                    tolerance, final_t(t-1), final_t(t), dt(1), T_imp);
             end
         catch err
-            fprintf('Gauss-Seidel divergence at Nx %d Ny %d and t = %g.', n(m), n(m), final_t(t));
+            fprintf('Gauss-Seidel divergence at Nx %d Ny %d and t = %g.', ...
+                n(m), n(m), final_t(t));
             x = NaN;
         end
         
@@ -118,7 +121,7 @@ if display_graphs
         for m = 1:length(n)
             for l = 1:length(dt)
                 subplot(length(n), length(dt), l+(m-1)*length(dt))
-                surf(T_states{m, l, t, 1}, T_states{m, l, t, 2}, T_states{m, l, t, 3});0
+                surf(T_states{m, l, t, 1}, T_states{m, l, t, 2}, T_states{m, l, t, 3});
                 xlabel('X');
                 ylabel('Y');
                 zlabel('T');
@@ -136,7 +139,8 @@ if display_graphs
     for m = 1:length(n)
         for t = 1:length(final_t)
             subplot(length(n), length(final_t), t+(m-1)*length(final_t))
-            surf(T_states{m, length(dt)+1, t, 1}, T_states{m, length(dt)+1, t, 2}, T_states{m, length(dt)+1, t, 3});
+            surf(T_states{m, length(dt)+1, t, 1}, ...
+                T_states{m, length(dt)+1, t, 2}, T_states{m, length(dt)+1, t, 3});
             xlabel('X');
             ylabel('Y');
             zlabel('T');
@@ -145,10 +149,6 @@ if display_graphs
         end
     end
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,14 +173,12 @@ if save_images
                 xlabel('X');
                 ylabel('Y');
                 zlabel('T');
-                sgtitle_text_exp = sprintf(['Explicitly at t = %g\nNx = Ny = %d \nδt = %g'], final_t(t), n(m), dt(l));
+                sgtitle_text_exp = sprintf(['Explicitly at t = %g\nNx = Ny = %d \nδt = %g'], ...
+                    final_t(t), n(m), dt(l));
                 sgtitle(sgtitle_text_exp);
-                exportgraphics(saving_figure, sprintf(['output/mesh_%d_dt_%g_final_t_%g.png'], n(m), dt(l), final_t(t)));
+                exportgraphics(saving_figure, sprintf(['output/mesh_%d_dt_%g_final_t_%g.png'], ...
+                    n(m), dt(l), final_t(t)));
             end
         end
     end
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
