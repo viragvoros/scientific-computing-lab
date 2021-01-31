@@ -27,16 +27,8 @@ function [x,y,T] = explicit(L, n, t_start, t_end, dt, current_T)
 
     % time loop    
     for k = 1:n_t   
-        % nodal loop
-        for j = 2: (n+1)
-            for i = 2: (n+1)
-                % explicit scheme for 2D heat equation
-                T(i,j) = (1-2*k1-2*k2) * T_old(i,j) + k1*(T_old(i+1,j) + T_old(i-1,j))...
-                    + k2*(T_old(i,j+1) + T_old(i,j-1)); 
-            end
-        end
-        % updating old values
-        T_old = T;
-
+        T(2:end-1, 2:end-1) = (1-2*k1-2*k2) * T(2:end-1, 2:end-1) ...
+            + k1 * (T(1:end-2, 2:end-1) + T(3:end, 2:end-1))...
+            + k2 * (T(2:end-1, 1:end-2) + T(2:end-1, 3:end));
     end
 end
